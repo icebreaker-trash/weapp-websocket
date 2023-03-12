@@ -2,10 +2,21 @@
 
 use new Websocket(url,protocols) in weapp
 
+- [Weapp-WebSocket](#weapp-websocket)
+  - [Quick Start](#quick-start)
+  - [Options](#options)
+  - [Graphql usage](#graphql-usage)
+    - [subscriptions-transport-ws](#subscriptions-transport-ws)
+    - [graphql-ws](#graphql-ws)
+
 ## Quick Start
 
 ```sh
-yarn add 
+npm i weapp-websocket
+# or
+yarn add weapp-websocket
+# or
+pnpm add weapp-websocket
 ```
 
 ```js
@@ -40,13 +51,85 @@ constructor(
 // so you can use 
 uni.connectSocket
 Taro.connectSocket 
-// etc...
+// etc... to create custom websockets
 ```
 
-Api refer:
+API refers link: <https://developer.mozilla.org/en-US/docs/Web/API/WebSocket>
 
-<https://developer.mozilla.org/en-US/docs/Web/API/WebSocket>
+Options refers link: <https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.connectSocket.html>
 
-options refer:
+## Graphql usage
 
-<https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.connectSocket.html>
+This package is useful for creating clients in weapp environment.
+
+### subscriptions-transport-ws
+
+protocol: `graphql-ws`
+
+you maybe create a client in this way:
+
+```js
+import { SubscriptionClient } from 'subscriptions-transport-ws'
+import { WeappWebSocket } from 'weapp-websocket'
+
+const wsClient = new SubscriptionClient('ws://127.0.0.1:3000/graphql', {
+  connectionParams: {
+    // your params
+  }
+  // other options
+}, // pass WeappWebSocket to webSocketImpl 
+WeappWebSocket)
+
+wsClient.request({
+  query: `
+subscription {
+   something{
+     id
+     value
+   }
+ }
+`
+}).subscribe({
+  next (res) {
+    console.log(res)
+  },
+  error (err) {
+    console.log(err)
+  }
+})
+```
+
+### graphql-ws
+
+protocol: `graphql-transport-ws`
+
+```js
+import { createClient } from 'graphql-ws'
+import { WeappWebSocket } from 'weapp-websocket'
+
+const wsClient = createClient({
+  url: 'ws://localhost:3000/graphql',
+  webSocketImpl: WeappWebSocket
+})
+
+wsClient.subscribe({
+        query: `
+             subscription {
+         something{
+           id
+           value
+         }
+       }
+        `
+      }, {
+        next (res) {
+          console.log(res)
+        },
+        error (err) {
+          console.log(err)
+        },
+        complete () {
+
+        }
+      })
+```

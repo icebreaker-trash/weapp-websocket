@@ -1,6 +1,6 @@
 {
   "name": "weapp-websocket",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "use new Websocket(url,protocols) in weapp",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
