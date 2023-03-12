@@ -7,27 +7,182 @@ exports[`rollup build lib build output diff 1`] = `
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const hello = () => 'world';
-console.log('Load util');
+// https:// github.com/facebook/react-native/blob/main/Libraries/WebSocket/WebSocket.js
+const CONNECTING = 0;
+const OPEN = 1;
+const CLOSING = 2;
+const CLOSED = 3;
+class WeappWebSocket {
+    constructor(url, protocols, options, connectSocket = wx.connectSocket) {
+        this.eventMap = {
+            close: [],
+            error: [],
+            message: [],
+            open: []
+        };
+        this.CONNECTING = CONNECTING;
+        this.OPEN = OPEN;
+        this.CLOSING = CLOSING;
+        this.CLOSED = CLOSED;
+        // 微信小程序只有这一种类型
+        this.binaryType = 'arraybuffer';
+        this.bufferedAmount = 0;
+        this.extensions = '';
+        // 这个协议应该由socket open 的时候获取到， 所以是服务端返回的
+        this.protocol = '';
+        // #region on event
+        this.oncloseIndex = -1;
+        this.onerrorIndex = -1;
+        this.onmessageIndex = -1;
+        this.onopenIndex = -1;
+        this.url = typeof url === 'string' ? url : url.toString();
+        const params = {
+            url: this.url,
+            protocols: typeof protocols === 'string' ? [protocols] : protocols
+        };
+        if (typeof options === 'object') {
+            Object.keys(options).forEach((k) => {
+                // @ts-ignore
+                params[k] = options[k];
+            });
+        }
+        this.task = connectSocket(params);
+        this.task.onOpen((result) => {
+            this.eventMap.open.forEach((fn) => {
+                fn.call(this.task, result);
+            });
+        });
+        this.task.onError((result) => {
+            this.eventMap.error.forEach((fn) => {
+                fn.call(this.task, result);
+            });
+        });
+        this.task.onMessage((result) => {
+            this.eventMap.message.forEach((fn) => {
+                fn.call(this.task, result);
+            });
+        });
+        this.task.onClose((result) => {
+            this.eventMap.close.forEach((fn) => {
+                fn.call(this.task, result);
+            });
+        });
+    }
+    get onclose() {
+        return this.eventMap.close[this.oncloseIndex] || null;
+    }
+    set onclose(fn) {
+        if (fn) {
+            if (typeof fn === 'function') {
+                this.eventMap.close.push(fn);
+                this.oncloseIndex = this.eventMap.close.length - 1;
+            }
+            // do nothing
+        }
+        else {
+            this.eventMap.close.splice(this.oncloseIndex, 1);
+            this.oncloseIndex = -1;
+        }
+    }
+    get onerror() {
+        return this.eventMap.error[this.onerrorIndex] || null;
+    }
+    set onerror(fn) {
+        if (fn) {
+            if (typeof fn === 'function') {
+                this.eventMap.error.push(fn);
+                this.onerrorIndex = this.eventMap.error.length - 1;
+            }
+            // do nothing
+        }
+        else {
+            this.eventMap.error.splice(this.onerrorIndex, 1);
+            this.onerrorIndex = -1;
+        }
+    }
+    get onmessage() {
+        return this.eventMap.message[this.onmessageIndex] || null;
+    }
+    set onmessage(fn) {
+        if (fn) {
+            if (typeof fn === 'function') {
+                this.eventMap.message.push(fn);
+                this.onmessageIndex = this.eventMap.message.length - 1;
+            }
+            // do nothing
+        }
+        else {
+            this.eventMap.message.splice(this.onmessageIndex, 1);
+            this.onmessageIndex = -1;
+        }
+    }
+    get onopen() {
+        return this.eventMap.open[this.onopenIndex] || null;
+    }
+    set onopen(fn) {
+        if (fn) {
+            if (typeof fn === 'function') {
+                this.eventMap.open.push(fn);
+                this.onopenIndex = this.eventMap.open.length - 1;
+            }
+            // do nothing
+        }
+        else {
+            this.eventMap.open.splice(this.onopenIndex, 1);
+            this.onopenIndex = -1;
+        }
+    }
+    // #endregion
+    get readyState() {
+        return this.task.readyState;
+    }
+    close(code, reason) {
+        return this.task.close({
+            code,
+            reason
+        });
+    }
+    send(data) {
+        return this.task.send({
+            data: data
+        });
+    }
+    addEventListener(type, listener
+    // options?: unknown
+    ) {
+        if (this.eventMap[type]) {
+            this.eventMap[type].push(listener);
+        }
+    }
+    removeEventListener(type, listener
+    // options?: unknown
+    ) {
+        if (this.eventMap[type]) {
+            const idx = this.eventMap[type].indexOf(listener);
+            if (idx > -1) {
+                this.eventMap[type].splice(idx, 1);
+            }
+        }
+    }
+    dispatchEvent(event) {
+        this.eventMap[event].forEach((fn) => {
+            fn.call(this.task);
+        });
+        return true;
+        //
+        // throw new Error('Method not implemented.')
+    }
+}
+WeappWebSocket.CONNECTING = CONNECTING;
+WeappWebSocket.OPEN = OPEN;
+WeappWebSocket.CLOSING = CLOSING;
+WeappWebSocket.CLOSED = CLOSED;
 
-const foo = 'bar';
-const wait = (timeout) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(true);
-        }, timeout);
-    });
-};
-
-exports.foo = foo;
-exports.hello = hello;
-exports.wait = wait;
+exports.WeappWebSocket = WeappWebSocket;
 ",
     "dynamicImports": [],
     "exports": [
-      "foo",
-      "hello",
-      "wait",
+      "WeappWebSocket",
     ],
     "fileName": "index.js",
     "implicitlyLoadedBefore": [],
@@ -47,25 +202,182 @@ exports.wait = wait;
 exports[`rollup build lib build output diff 2`] = `
 [
   {
-    "code": "const hello = () => 'world';
-console.log('Load util');
+    "code": "// https:// github.com/facebook/react-native/blob/main/Libraries/WebSocket/WebSocket.js
+const CONNECTING = 0;
+const OPEN = 1;
+const CLOSING = 2;
+const CLOSED = 3;
+class WeappWebSocket {
+    constructor(url, protocols, options, connectSocket = wx.connectSocket) {
+        this.eventMap = {
+            close: [],
+            error: [],
+            message: [],
+            open: []
+        };
+        this.CONNECTING = CONNECTING;
+        this.OPEN = OPEN;
+        this.CLOSING = CLOSING;
+        this.CLOSED = CLOSED;
+        // 微信小程序只有这一种类型
+        this.binaryType = 'arraybuffer';
+        this.bufferedAmount = 0;
+        this.extensions = '';
+        // 这个协议应该由socket open 的时候获取到， 所以是服务端返回的
+        this.protocol = '';
+        // #region on event
+        this.oncloseIndex = -1;
+        this.onerrorIndex = -1;
+        this.onmessageIndex = -1;
+        this.onopenIndex = -1;
+        this.url = typeof url === 'string' ? url : url.toString();
+        const params = {
+            url: this.url,
+            protocols: typeof protocols === 'string' ? [protocols] : protocols
+        };
+        if (typeof options === 'object') {
+            Object.keys(options).forEach((k) => {
+                // @ts-ignore
+                params[k] = options[k];
+            });
+        }
+        this.task = connectSocket(params);
+        this.task.onOpen((result) => {
+            this.eventMap.open.forEach((fn) => {
+                fn.call(this.task, result);
+            });
+        });
+        this.task.onError((result) => {
+            this.eventMap.error.forEach((fn) => {
+                fn.call(this.task, result);
+            });
+        });
+        this.task.onMessage((result) => {
+            this.eventMap.message.forEach((fn) => {
+                fn.call(this.task, result);
+            });
+        });
+        this.task.onClose((result) => {
+            this.eventMap.close.forEach((fn) => {
+                fn.call(this.task, result);
+            });
+        });
+    }
+    get onclose() {
+        return this.eventMap.close[this.oncloseIndex] || null;
+    }
+    set onclose(fn) {
+        if (fn) {
+            if (typeof fn === 'function') {
+                this.eventMap.close.push(fn);
+                this.oncloseIndex = this.eventMap.close.length - 1;
+            }
+            // do nothing
+        }
+        else {
+            this.eventMap.close.splice(this.oncloseIndex, 1);
+            this.oncloseIndex = -1;
+        }
+    }
+    get onerror() {
+        return this.eventMap.error[this.onerrorIndex] || null;
+    }
+    set onerror(fn) {
+        if (fn) {
+            if (typeof fn === 'function') {
+                this.eventMap.error.push(fn);
+                this.onerrorIndex = this.eventMap.error.length - 1;
+            }
+            // do nothing
+        }
+        else {
+            this.eventMap.error.splice(this.onerrorIndex, 1);
+            this.onerrorIndex = -1;
+        }
+    }
+    get onmessage() {
+        return this.eventMap.message[this.onmessageIndex] || null;
+    }
+    set onmessage(fn) {
+        if (fn) {
+            if (typeof fn === 'function') {
+                this.eventMap.message.push(fn);
+                this.onmessageIndex = this.eventMap.message.length - 1;
+            }
+            // do nothing
+        }
+        else {
+            this.eventMap.message.splice(this.onmessageIndex, 1);
+            this.onmessageIndex = -1;
+        }
+    }
+    get onopen() {
+        return this.eventMap.open[this.onopenIndex] || null;
+    }
+    set onopen(fn) {
+        if (fn) {
+            if (typeof fn === 'function') {
+                this.eventMap.open.push(fn);
+                this.onopenIndex = this.eventMap.open.length - 1;
+            }
+            // do nothing
+        }
+        else {
+            this.eventMap.open.splice(this.onopenIndex, 1);
+            this.onopenIndex = -1;
+        }
+    }
+    // #endregion
+    get readyState() {
+        return this.task.readyState;
+    }
+    close(code, reason) {
+        return this.task.close({
+            code,
+            reason
+        });
+    }
+    send(data) {
+        return this.task.send({
+            data: data
+        });
+    }
+    addEventListener(type, listener
+    // options?: unknown
+    ) {
+        if (this.eventMap[type]) {
+            this.eventMap[type].push(listener);
+        }
+    }
+    removeEventListener(type, listener
+    // options?: unknown
+    ) {
+        if (this.eventMap[type]) {
+            const idx = this.eventMap[type].indexOf(listener);
+            if (idx > -1) {
+                this.eventMap[type].splice(idx, 1);
+            }
+        }
+    }
+    dispatchEvent(event) {
+        this.eventMap[event].forEach((fn) => {
+            fn.call(this.task);
+        });
+        return true;
+        //
+        // throw new Error('Method not implemented.')
+    }
+}
+WeappWebSocket.CONNECTING = CONNECTING;
+WeappWebSocket.OPEN = OPEN;
+WeappWebSocket.CLOSING = CLOSING;
+WeappWebSocket.CLOSED = CLOSED;
 
-const foo = 'bar';
-const wait = (timeout) => {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve(true);
-        }, timeout);
-    });
-};
-
-export { foo, hello, wait };
+export { WeappWebSocket };
 ",
     "dynamicImports": [],
     "exports": [
-      "foo",
-      "hello",
-      "wait",
+      "WeappWebSocket",
     ],
     "fileName": "index.es.js",
     "implicitlyLoadedBefore": [],

@@ -1,26 +1,52 @@
-# npm-lib-rollup-template
+# Weapp-WebSocket
 
-本人用于编写的一个 `npm` 包的一个模板
+use new Websocket(url,protocols) in weapp
 
-- 使用 `tsc` 或者 `rollup` 打包
-- 使用 `jest` 设置作为单元测试
-- 使用 `eslint` 来规范代码风格，默认风格为 `standard`
-- 输出 `dist` -> `cjs`,`esm` and `.d.ts`
+## Quick Start
 
-## scripts
+```sh
+yarn add 
+```
 
-### rename
+```js
+import { WeappWebSocket } from 'weapp-websocket'
+const ws = new WeappWebSocket('ws://127.0.0.1:3000/graphql',['graphql-ws'])
 
-执行 `npm run init:rename`
- 
-作用为替换 `package.json` 中默认包含的所有名称为 `npm-lib-rollup-template` 的字段
+ws.close()
+ws.close(code)
+ws.close(code, reason)
+ws.send(data)
+ws.addEventListener('close', (event) => { })
+ws.onclose = (event) => { }
+addEventListener('error', (event) => { })
 
-默认替换为新建代码仓库的文件夹名称！
+onerror = (event) => { }
+addEventListener('message', (event) => { })
 
-### bin
+onmessage = (event) => { }
+```
 
-执行 `npm run init:bin`
- 
-作用为 `package.json`  添加 `files` 和 `bin`，同时生成 `bin/{{pkg.name}}.js` 和 `src/cli.ts` 文件
+## Options
 
+```js
+constructor(
+    url: string | URL,
+    protocols?: string | string[],
+    options?: Partial<
+      Omit<WechatMiniprogram.ConnectSocketOption, 'url' | 'protocols'>
+    >,
+    connectSocket = wx.connectSocket
+)
+// so you can use 
+uni.connectSocket
+Taro.connectSocket 
+// etc...
+```
 
+Api refer:
+
+<https://developer.mozilla.org/en-US/docs/Web/API/WebSocket>
+
+options refer:
+
+<https://developers.weixin.qq.com/miniprogram/dev/api/network/websocket/wx.connectSocket.html>

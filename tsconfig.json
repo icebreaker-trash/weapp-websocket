@@ -23,6 +23,11 @@
         "transform": "typescript-transform-paths",
         "afterDeclarations": true
       }
+    ],
+    "types": [
+      "miniprogram-api-typings",
+      "@types/jest",
+      "@types/node"
     ]
   },
   "exclude": [
