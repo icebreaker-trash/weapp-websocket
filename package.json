@@ -1,6 +1,6 @@
 {
   "name": "weapp-websocket",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "use new Websocket(url,protocols) in weapp",
   "main": "dist/index.js",
   "module": "dist/index.es.js",
@@ -19,7 +19,7 @@
     "prepare": "ts-patch install -s",
     "preinstall": "npx only-allow pnpm"
   },
-  "packageManager": "pnpm@7.16.1",
+  "packageManager": "pnpm@8.6.12",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sonofmagic/weapp-websocket.git"
