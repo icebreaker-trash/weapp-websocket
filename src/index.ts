@@ -1,11 +1,9 @@
-// https:// github.com/facebook/react-native/blob/main/Libraries/WebSocket/WebSocket.js
-
 type BinaryType = 'blob' | 'arraybuffer'
 
-const CONNECTING = 0
-const OPEN = 1
-const CLOSING = 2
-const CLOSED = 3
+const CONNECTING = 0 as const
+const OPEN = 1 as const
+const CLOSING = 2 as const
+const CLOSED = 3 as const
 
 // const WEBSOCKET_EVENTS = ['close', 'error', 'message', 'open']
 type WEBSOCKET_EVENTS = 'close' | 'error' | 'message' | 'open'
@@ -48,10 +46,10 @@ export class WeappWebSocket
     open: Function[]
   }
 
-  CONNECTING: number = CONNECTING
-  OPEN: number = OPEN
-  CLOSING: number = CLOSING
-  CLOSED: number = CLOSED
+  CONNECTING = CONNECTING
+  OPEN = OPEN
+  CLOSING = CLOSING
+  CLOSED = CLOSED
   // 微信小程序只有这一种类型
   binaryType: BinaryType = 'arraybuffer'
   bufferedAmount: number = 0
