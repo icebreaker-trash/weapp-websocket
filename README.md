@@ -1,5 +1,7 @@
 # Weapp-WebSocket
 
+> Move to <https://github.com/sonofmagic/weapp-core/tree/main/packages/websocket>
+
 use new Websocket(url,protocols) in weapp
 
 - [Weapp-WebSocket](#weapp-websocket)
